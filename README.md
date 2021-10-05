@@ -4,3 +4,8 @@ Grafcet model can be translated into an equivalent formal model, a FSM with inpu
 ## Grafcet example
 
 ![alt text](https://github.com/ocanis/Grafcet_to_Automaton/blob/main/Grafcet_to_automaton/Examples/aSimpleGrafcet.gif?raw=true)
+
+# Output
+### Generated Mealy Machine
+![alt text](https://github.com/ocanis/Grafcet_to_Automaton/blob/main/Grafcet_to_automaton/Examples/Output1.JPG?raw=true)
+![alt text](https://github.com/ocanis/Grafcet_to_Automaton/blob/main/Grafcet_to_automaton/Examples/Output2.JPG?raw=true)
