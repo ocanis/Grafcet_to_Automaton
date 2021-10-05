@@ -1,0 +1,221 @@
+################################################################################
+#
+# This file is a textual description of a Grafcet model which can be analysed
+#
+#
+################################################################################
+#
+# Introductory remark :
+# - All character after character '#' is not taken into account
+#
+# A description contains two blocks :
+# - <INFO> ... </INFO>         (Optional block)
+# - <GRAFCET> ... </GRAFCET>   (Compulsory block)
+# 
+# Block <INFO> ... </INFO> contains three parts :
+# - AuthorDescription      Compulsory
+# - DateDescription        Optional
+# - optionalComment        Optional
+#
+# AuthorDescription := 'Author' ':' Word Word
+#   DateDescription := 'Date' ':' DigitDigit '/'  DigitDigit '/' DigitDigit
+#   OptionalComment := '(*' Any Character except 'return' '*)'      
+#
+# Bloc <GRAFCET> ... </GRAFCET> contains three blocks :
+# - <INPUTS> ... </INPUTS>     (Compulsory block)
+# - <OUTPUTS> ... </OUTPUTS>   (Compulsory block)
+# - <CHARTS> ... </CHARTS>     (Compulsory block)
+#
+# Bloc <INPUTS> ... </INPUTS> contains the descriptions of all inputs.
+# InputDescription := InputName OptionalComment ';'
+#
+# Bloc <OUTPUTS> ... </OUTPUTS> contains the description of all outputs.
+#   OutputDescription := OutputName OptionalComment ';'
+#
+# Bloc <CHARTS> ... </CHARTS> contains the description of all charts.
+#   ChartDescription := PartialDescription | ExpansionDescription
+#
+# A partialDescription is a bloc 
+# <PARTIAL Name = ChartName > ... </PARTIAL> contains three blocks :
+# - <STEPS> ... </STEPS>     (Compulsory block)
+# - <TRANSITIONS> ... </TRANSITIONS>   (Compulsory block)
+# - <ACTIONS> ... </ACTIONS>     (Optional block)
+#
+# In a chart, bloc <STEPS> ... </STEPS> contains the description of all 
+# steps included in the chart.
+#   StepDescription := Step | InitialStep | MacroStep
+#              Step := StepName OptionalComment ';'
+#       InitialStep := StepName ':' 'Initial' OptionalComment ';'
+#         MacroStep := StepName ':' 'Macro-step' OptionalComment ';'
+#
+#  Bloc <TRANSITIONS> ... </TRANSITIONS> contains the description of all 
+#  transitions included in the chart.
+#    TransitionDescription := TransitionName ':' FromSteps ':' ToSteps 
+#                              ':' ConditionTransition ';'
+#       FromSteps := Empty | Steps
+#         ToSteps := Empty | Steps
+#           Steps := StepName | StepName ',' Steps
+#
+# ConditionTransition := BooleanExpression
+#   BooleanExpression := Variable | Negation | Sum | Product 
+#                          | '(' BooleanExpression ')'
+#            Variable := InputName | StepName  
+#            Negation := '/' ( Variable | '(' BooleanExpression ')' )
+#                 Sum := BooleanExpression  '+' BooleanExpression
+#             Product := BooleanExpression  '.' BooleanExpression
+#
+#  Bloc <ACTIONS> ... </ACTIONS> contains the description of all actions
+#  included in the chart.
+#    ActionDescription :=  ContinuousAction | ConditionalAction | StoredAction
+#     ContinuousAction := ActionName ':' 'Continuous' ':' StepName 
+#                         ':' OutputName ';'
+#    ConditionalAction := ActionName ':' 'Continuous' ':' StepName 
+#                         ':' OutputName ':' Condition ';'
+#         StoredAction := ActionName ':' 'Stored' ':' StepName ':' OutputName
+#                ':' ('Set' | 'Reset') ':' ( 'Activation' | 'Desactivation') ';'
+#            Condition := BooleanExpression
+#
+#  A ExpansionDescription is a bloc 
+#  <EXPANSION Name = ChartName > ... </EXPANSION> contains three blocks :
+#  - <STEPS> ... </STEPS>     (Compulsory block)
+#  - <TRANSITIONS> ... </TRANSITIONS>   (Compulsory block)
+#  - <ACTIONS> ... </ACTIONS>     (Optional block)
+#
+# In an expansion, bloc <STEPS> ... </STEPS> contains the description of all 
+# steps included in the chart. 
+# The first element is the description of the Entry step.
+# The last element is the description of the Exit step.
+#   EntryStep := StepName ':' 'Entry step' OptionalComment ';'
+#    ExitStep := StepName ':' 'Exit step' OptionalComment ';'
+# The others elements are as presented in StepDescription.
+#
+################################################################################
+
+<INFO>
+  Author : ocanis
+  Date : 01/01/10
+</INFO>
+
+<GRAFCET>
+
+<INPUTS>
+  PO  (* Gate totally open *) ;
+  PF  (* Gate totally closed *) ;
+  Tel (* Request to open the gate via the remote control device *) ;
+  Voit (* Car detection *) ;
+</INPUTS>
+
+<OUTPUTS>
+  Ouvrir (* Gate opening command *) ;
+  Fermer (* Gate closing command *) ;
+</OUTPUTS>
+
+<CHARTS>
+
+<PARTIAL Name = G1 >
+
+<STEPS>
+  10 : Initial ;
+  11 ;
+</STEPS>
+
+<TRANSITIONS>
+  t1 : 10 : 11 : /PO.(Tel+/PF.Voit) ;
+  t2 : 11 : 10 : PO ;
+</TRANSITIONS>
+
+<ACTIONS>
+  A1 : Continuous : 10 : Fermer : /PF./Tel./Voit ;
+  A2 : Continuous : 11 : Ouvrir ;
+</ACTIONS>
+
+</PARTIAL>
+
+</CHARTS>
+
+</GRAFCET>
+
+
+<MEALY MACHINE>
+
+######################################################################
+#
+# Constitution of the Mealy machine:
+# - Number of states: 3
+# - Number of transitions : 48
+# - Size of the Inputs alphabet: 16
+# - Size of the Outputs alphabet: 3
+# - Duration of generation : 0 ms
+#
+######################################################################
+
+<TRANSITIONS>
+# Source : Target : Input code,Output code
+#
+# Input code: I0 = PO
+# - 0 : /I3./I2./I1./I0
+# - 1 : /I3./I2./I1.I0
+# - 2 : /I3./I2.I1./I0
+#
+# Output code: O0 = Ouvrir
+# - 0 : /O3./O2./O1./O0
+# - 1 : /O3./O2./O1.O0
+# - 2 : /O3./O2.O1./O0
+
+# From state 1
+1 : 1 : 2,0
+1 : 1 : 3,0
+1 : 1 : 5,0
+1 : 1 : 7,0
+1 : 1 : 9,0
+1 : 1 : 10,0
+1 : 1 : 11,0
+1 : 1 : 13,0
+1 : 1 : 15,0
+1 : 2 : 0,2
+1 : 2 : 1,2
+1 : 3 : 4,1
+1 : 3 : 6,1
+1 : 3 : 8,1
+1 : 3 : 12,1
+1 : 3 : 14,1
+
+# From state 2
+2 : 2 : 0,2
+2 : 2 : 1,2
+2 : 1 : 2,0
+2 : 1 : 3,0
+2 : 1 : 5,0
+2 : 1 : 7,0
+2 : 1 : 9,0
+2 : 1 : 10,0
+2 : 1 : 11,0
+2 : 1 : 13,0
+2 : 1 : 15,0
+2 : 3 : 4,1
+2 : 3 : 6,1
+2 : 3 : 8,1
+2 : 3 : 12,1
+2 : 3 : 14,1
+
+# From state 3
+3 : 3 : 0,1
+3 : 3 : 2,1
+3 : 3 : 4,1
+3 : 3 : 6,1
+3 : 3 : 8,1
+3 : 3 : 10,1
+3 : 3 : 12,1
+3 : 3 : 14,1
+3 : 1 : 3,0
+3 : 1 : 5,0
+3 : 1 : 7,0
+3 : 1 : 9,0
+3 : 1 : 11,0
+3 : 1 : 13,0
+3 : 1 : 15,0
+3 : 2 : 1,2
+
+</TRANSITIONS>
+
+</MEALY MACHINE>
