@@ -1,0 +1,50 @@
+################################################################################
+#
+# This file is a textual description of a Grafcet model which can be analysed
+# by  sofware
+#
+################################################################################
+
+<INFO>
+  Author : Anis OC
+  Date : 01/01/18
+</INFO>
+
+<GRAFCET>
+
+<INPUTS>
+  PO  (* Gate totally open *) ;
+  PF  (* Gate totally closed *) ;
+  Tel (* Request to open the gate via the remote control device *) ;
+  Voit (* Car detection *) ;
+</INPUTS>
+
+<OUTPUTS>
+  Ouvrir (* Gate opening command *) ;
+  Fermer (* Gate closing command *) ;
+</OUTPUTS>
+
+<CHARTS>
+
+<PARTIAL Name = G1 >
+
+<STEPS>
+  10 : Initial ;
+  11 ;
+</STEPS>
+
+<TRANSITIONS>
+  t1 : 10 : 11 : /PO.(Tel+/PF.Voit) ;
+  t2 : 11 : 10 : PO ;
+</TRANSITIONS>
+
+<ACTIONS>
+  A1 : Continuous : 10 : Fermer : /PF./Tel./Voit ;
+  A2 : Continuous : 11 : Ouvrir ;
+</ACTIONS>
+
+</PARTIAL>
+
+</CHARTS>
+
+</GRAFCET>
